@@ -1,20 +1,38 @@
 // This file is part of www.nand2tetris.org
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
-// File name: projects/01/Mux4Way16.hdl
+// File name: projects/01/DMux4Way.hdl
 
 /**
- * 4-way 16-bit multiplexor:
- * out = a if sel == 00
- *       b if sel == 01
- *       c if sel == 10
- *       d if sel == 11
+ * 4-way demultiplexor:
+ * {a, b, c, d} = {in, 0, 0, 0} if sel == 00
+ *                {0, in, 0, 0} if sel == 01
+ *                {0, 0, in, 0} if sel == 10
+ *                {0, 0, 0, in} if sel == 11
  */
 
-CHIP Mux4Way16 {
-    IN a[16], b[16], c[16], d[16], sel[2];
-    OUT out[16];
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
 
     PARTS:
     // Put your code here:
+   /* Not(in=sel[0],out=s1);
+    Not(in=sel[1],out=s2);
+    Or(a=sel[0],b=sel[1],out=e);
+    Or(a=s1,b=sel[1],out=f);
+    Or(a=sel[0],b=s2,out=g);
+    Or(a=s1,b=s2,out=h);
+    Not(in=e,out=A);
+    Not(in=f,out=B);
+    Not(in=g,out=C);
+    Not(in=h,out=D);
+    And(a=in,b=A,out=a);
+    And(a=in,b=B,out=b);
+    And(a=in,b=C,out=c);
+    And(a=in,b=D,out=d);*/
+
+    DMux(in=in,sel=sel[1],a=f,b=g);
+    DMux(in=f,sel=sel[0],a=a,b=b);
+    DMux(in=g,sel=sel[0],a=c,b=d);
 }

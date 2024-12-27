@@ -40,4 +40,35 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+
+    Mux16(a = instruction , b = out , sel = instruction[15] , out = goaregister);
+
+    And(a = instruction[15] , b = instruction[5] , out = cd1);
+    Not(in = instruction[15] , out = isA);
+    Or(a = cd1 , b = isA , out = Aload);
+    ARegister(in = goaregister , load = Aload , out = gomselectorA);
+
+    Mux16(a = gomselectorA , b = inM , sel = instruction[12] , out = goaluy);
+
+    And(a = instruction[4] , b = instruction[15] , out = dload);
+    DRegister(in = out , load = dload , out = goalux);
+
+    ALU(x = goalux, y = goaluy , zx = instruction[11] , nx = instruction[10] , zy = instruction[9] , ny = instruction[8] , f = instruction[7] , no = instruction[6] , out = out , zr = zr , ng = ng);
+
+    And(a = instruction[2] , b = ng , out = lower);
+    And(a = instruction[1] , b = zr , out = equal);
+    Or(a = zr , b = ng , out = greatertemp);
+    Not(in = greatertemp , out = greatertempn);
+    And(a = greatertempn , b = instruction[0] , out = greater);
+    Or(a = lower , b = equal , out = jumptemp);
+    Or(a = greater , b = jumptemp, out = jumptemp2);
+    Not(in = jump , out = inc);
+    And(a = jumptemp2 , b = instruction[15] , out = jump);
+
+    PC(in = gomselectorA , load = jump , inc = inc , reset = reset , out[0..14] = pc);
+
+    And16(a = out , b = true , out = outM);
+    And16(a = gomselectorA , b = true , out[0..14] = addressM);
+    And(a = instruction[3] , b = instruction[15] , out = writeM);
+
 }

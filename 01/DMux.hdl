@@ -15,4 +15,11 @@ CHIP DMux {
 
     PARTS:
     // Put your code here:
+
+    Not (in=sel , out=nsel);
+
+    And (a=in , b=nsel , out=a);
+    And (a=in , b=sel , out=b);
 }
+
+// Circurt diagarm : https://docs.google.com/drawings/d/1QxX5ArdrPJ_0xJ19uERSPhG5YwWm4WYgOtHV5uVIeVw/edit
